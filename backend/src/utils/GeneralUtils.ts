@@ -26,6 +26,17 @@ export class GeneralUtils {
     };
   }
 
+  // Generate Login Token
+  static generateAuthToken(user: UserEntity) {
+    const accessToken = this.generateJWT({
+      id: user.id,
+      tokenType: TokenType.USER_AUTH,
+    });
+    return {
+      accessToken: accessToken,
+    };
+  }
+
   // Validate JWT TOKEN
   static validateJWT(token: string) {
     try {
