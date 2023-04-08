@@ -1,6 +1,11 @@
 import cors from "cors";
 import express, { Application, Request, Response, NextFunction } from "express";
 import morgan from "morgan";
+import authRouter from "./routers/authRouter";
+import bodyParser from "body-parser";
+import { ResponseUtil } from "./utils/Response";
+import { ErrorHandler } from "./middlewares/ErrorHandler";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
 export default function configureApp() {
   const app: Application = express();
@@ -8,14 +13,26 @@ export default function configureApp() {
   // middlewares
   app.use(cors());
   app.use(morgan("dev"));
+  app.use(bodyParser.json());
 
   // end middlewares
 
-  app.use("/hello", (req: Request, res: Response, next: NextFunction) => {
-    return res.status(200).json({
-      message: "Initial setup",
-    });
+  // routers
+  app.use("/auth", authRouter);
+
+  // end routers
+
+  app.use("*", (req: Request, res: Response) => {
+    return ResponseUtil.sendError(
+      res,
+      "Item/page you are looking for does not exist",
+      StatusCodes.NOT_FOUND,
+      ReasonPhrases.NOT_FOUND
+    );
   });
+
+  // Define a middleware function to handle errors
+  app.use(ErrorHandler.handleErrors);
 
   return app;
 }

@@ -1,8 +1,10 @@
-import "reflect-metadata"
+import "reflect-metadata";
 import { DataSource } from "typeorm";
 import configValues from "../configs/config";
 import { CreateRolesTable1680894214505 } from "./migrations/1680894214505-CreateRolesTable";
 import { CreateUsersTable1680895101523 } from "./migrations/1680895101523-CreateUsersTable";
+import { RoleEntity } from "./entities/RoleEntity";
+import { UserEntity } from "./entities/UserEntity";
 
 let AppDataSource: DataSource;
 
@@ -12,6 +14,7 @@ if (configValues.NODE_ENV == "testing") {
     database: "testdb",
     logging: false,
     synchronize: true,
+    entities: [RoleEntity, UserEntity],
   });
 } else {
   AppDataSource = new DataSource({
@@ -21,13 +24,9 @@ if (configValues.NODE_ENV == "testing") {
     password: configValues.DB_PASSWORD,
     database: configValues.DB_DATABASE,
     logging: true,
-    entities: [],
-    migrations: [
-      CreateRolesTable1680894214505,
-      CreateUsersTable1680895101523,
-    ],
+    entities: [RoleEntity, UserEntity],
+    migrations: [CreateRolesTable1680894214505, CreateUsersTable1680895101523],
   });
 }
 
-
-export default AppDataSource
+export default AppDataSource;

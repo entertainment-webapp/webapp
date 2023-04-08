@@ -4,6 +4,7 @@ import AppDataSource from "../data-source";
 import { RoleEntity } from "./RoleEntity";
 import { ROLES } from "../../constants/Roles";
 import { DBTable } from "../../constants/DBTable";
+import { Exclude } from "class-transformer";
 
 @Entity(DBTable.USERS)
 export class UserEntity {
@@ -14,6 +15,7 @@ export class UserEntity {
   email: string;
 
   @Column({ nullable: false })
+  @Exclude()
   password: string;
 
   @Column({ nullable: false, default: false })
@@ -24,6 +26,7 @@ export class UserEntity {
 
   @ManyToOne(() => RoleEntity, (role) => role.users)
   @JoinColumn()
+  @Exclude()
   role: RoleEntity;
 
   @BeforeInsert()
